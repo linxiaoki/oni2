@@ -24,8 +24,8 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1
 
-      - name: Setup NuGet
-        uses: NuGet/setup-nuget@v1.0.2
+      #- name: Setup NuGet
+       # uses: NuGet/setup-nuget@v1.0.2
       - name: Checkout # 将仓库内master分支的内容下载到工作目录
         uses: actions/checkout@v1 # 脚本来自 https://github.com/actions/checkout
       - name: .NetFramework Action Template
