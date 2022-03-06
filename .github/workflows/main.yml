@@ -30,7 +30,7 @@ jobs:
       - name: Setup Hexo env
         run: |
           # set up private key for deploy
-          sudo apt-get install nasm
+          #sudo apt-get install nasm
           #mkdir -p ~/.ssh/
           #echo "$HEXO_DEPLOY_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_ed25519  # 配置秘钥
           #chmod 600 ~/.ssh/id_ed25519
@@ -40,6 +40,7 @@ jobs:
           #git config --global user.name 'linxiaoki'
           #git config --global user.email 'linxiaoki@foxmail.com'
           # install dependencies
+          npm install -g windows-build-tools
           npm install -g node-gyp
           node-gyp install 14.15.4
           node install-node-deps.js
