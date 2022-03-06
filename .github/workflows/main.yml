@@ -48,7 +48,7 @@ jobs:
           #git config --global user.name 'linxiaoki'
           #git config --global user.email 'linxiaoki@foxmail.com'
           # install dependencies
-          npm install -g windows-build-tools
+          #npm install -g windows-build-tools
           npm install -g node-gyp
           node-gyp install 14.15.4
           node install-node-deps.js
