@@ -6,9 +6,9 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -16,35 +16,63 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build: # 一项叫做build的任务
-    
-    runs-on: ubuntu-latest # 在最新版的Ubuntu系统下运行
+    #runs-on: ubuntu-latest # 在最新版的Ubuntu系统下运行
+    runs-on: windows-2019 # 在最新版的Ubuntu系统下运行
     
     steps:
-    - name: Checkout # 将仓库内master分支的内容下载到工作目录
-      uses: actions/checkout@v1 # 脚本来自 https://github.com/actions/checkout
-      
-    - name: Use Node.js 14.x # 配置Node环境
-      uses: actions/setup-node@v1 # 配置脚本来自 https://github.com/actions/setup-node
-      with:
-        node-version: "14.x"
-    - name: Setup Hexo env
-      run: |
-        # set up private key for deploy
-        sudo apt-get install nasm
-        #mkdir -p ~/.ssh/
-        #echo "$HEXO_DEPLOY_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_ed25519  # 配置秘钥
-        #chmod 600 ~/.ssh/id_ed25519
-        #ssh-keyscan github.com >> ~/.ssh/known_hosts
-        #ssh-keyscan gitee.com >> ~/.ssh/known_hosts
-        # set git infomation
-        #git config --global user.name 'linxiaoki'
-        #git config --global user.email 'linxiaoki@foxmail.com'
-        # install dependencies
-        npm install -g node-gyp
-        node-gyp install 14.15.4
-        node install-node-deps.js
-        npm install -g esy
-        esy install
-        esy bootstrap
-        esy build
-        esy run -f --checkhealth
+      - name: Checkout # 将仓库内master分支的内容下载到工作目录
+        uses: actions/checkout@v1 # 脚本来自 https://github.com/actions/checkout
+
+      - name: Use Node.js 14.x # 配置Node环境
+        uses: actions/setup-node@v1 # 配置脚本来自 https://github.com/actions/setup-node
+        with:
+          node-version: "14.x"
+      - name: Setup Hexo env
+        run: |
+          # set up private key for deploy
+          sudo apt-get install nasm
+          #mkdir -p ~/.ssh/
+          #echo "$HEXO_DEPLOY_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_ed25519  # 配置秘钥
+          #chmod 600 ~/.ssh/id_ed25519
+          #ssh-keyscan github.com >> ~/.ssh/known_hosts
+          #ssh-keyscan gitee.com >> ~/.ssh/known_hosts
+          # set git infomation
+          #git config --global user.name 'linxiaoki'
+          #git config --global user.email 'linxiaoki@foxmail.com'
+          # install dependencies
+          npm install -g node-gyp
+          node-gyp install 14.15.4
+          node install-node-deps.js
+          npm install -g esy
+          esy install
+          esy bootstrap
+          esy build
+          esy run -f --checkhealth
+      # 第二步：打包构建
+      - name: pack
+      - run: tar -zcvf release.tgz .nuxt static nuxt.config.js package.json package-lock.json pm2.config.json
+        # 把.nuxt、nuxt.config.js等文件，打包压缩为release.tgz
+
+      # 第三步：发布 Release
+      - name: Create Release # 创建Release，可以在仓库看到一个个版本
+        id: create_release
+        uses: actions/create-release@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }} # 之前GitHub添加的Token
+        with:
+          tag_name: ${{ github.ref }} # (tag)标签名称
+          release_name: Release ${{ github.ref }}
+          draft: false # 是否是草稿
+          prerelease: false # 是否是预发布
+
+      # 第四步：上传构建结果到 Release（把打包的tgz上传到Release）
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # 上传地址，通过创建Release获取到的
+          asset_path: ./release.tgz # 要上传文件
+          asset_name: release.tgz # 上传后的文件名
+          asset_content_type: application/x-tgz
