@@ -30,7 +30,7 @@ jobs:
     - name: Setup Hexo env
       run: |
         # set up private key for deploy
-        apt-get install nasm
+        sudo apt-get install nasm
         #mkdir -p ~/.ssh/
         #echo "$HEXO_DEPLOY_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_ed25519  # 配置秘钥
         #chmod 600 ~/.ssh/id_ed25519
