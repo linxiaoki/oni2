@@ -34,6 +34,7 @@ jobs:
       
        # 第二步：打包构建
       - name: pack
+        uses: actions/setup-node@master
       - run: makecab ./package.json release.zip
         # 把.nuxt、nuxt.config.js等文件，打包压缩为release.tgz
 
