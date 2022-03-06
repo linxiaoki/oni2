@@ -80,7 +80,7 @@ jobs:
           # Filename for archive
           filename: release.zip
           # Base path for archive files
-          path:  ./_esy/release
+          path:  ./release
           # Working directory before zipping
           directory: .
           # List of excluded files / directories
