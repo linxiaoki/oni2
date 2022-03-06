@@ -74,8 +74,11 @@ jobs:
           esy '@release' install
           esy '@release' run --help
           esy '@release' create
-          ./scripts/windows/publish.ps1
-          
+      
+      - name: Run a one-line script
+        run: ./scripts/windows/publish.ps1
+        shell: powershell
+  
           # 第二步：打包构建
       - name: Zip Release
         # You may pin to the exact commit or the version.
