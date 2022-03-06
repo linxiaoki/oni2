@@ -80,7 +80,7 @@ jobs:
           # Filename for archive
           filename: release.zip
           # Base path for archive files
-          path:  ./release
+          path:  ./
           # Working directory before zipping
           directory: .
           # List of excluded files / directories
@@ -95,7 +95,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }} # 之前GitHub添加的Token
         with:
-          tag_name: test6 # (tag)标签名称
+          tag_name: test7 # (tag)标签名称
           release_name: Release ${{ github.ref }}
           draft: false # 是否是草稿
           prerelease: false # 是否是预发布
