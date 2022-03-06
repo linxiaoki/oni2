@@ -18,12 +18,12 @@ jobs:
   build: # 一项叫做build的任务
     #runs-on: ubuntu-latest # 在最新版的Ubuntu系统下运行
     runs-on: windows-latest # 在最新版的Ubuntu系统下运行  
-
+    
     
     steps:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1
-
+      
       #- name: Setup NuGet
        # uses: NuGet/setup-nuget@v1.0.2
       - name: Checkout # 将仓库内master分支的内容下载到工作目录
@@ -33,10 +33,13 @@ jobs:
       
       
        # 第二步：打包构建
-      - name: pack
-        uses: actions/setup-node@master
-      - run: makecab ./package.json release.zip
-        # 把.nuxt、nuxt.config.js等文件，打包压缩为release.tgz
+      - name: Action 7z
+        # You may pin to the exact commit or the version.
+        # uses: edgarrc/action-7z@93485892b5468e89cfb2c28a8d1c0e3904906458
+        uses: edgarrc/action-7z@v1
+        with:
+          args: 7z a -t7z -mx=9 release.7z ./scripts/windows/
+      
 
       # 第三步：发布 Release
       - name: Create Release # 创建Release，可以在仓库看到一个个版本
@@ -58,8 +61,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # 上传地址，通过创建Release获取到的
-          asset_path: ./release.zip # 要上传文件
-          asset_name: release.zip # 上传后的文件名
+          asset_path: ./release.7z # 要上传文件
+          asset_name: release.7z # 上传后的文件名
           asset_content_type: application/x-tgz
       
       
